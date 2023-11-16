@@ -1,0 +1,58 @@
+{% extends 'base.html' %} {% block first_col %} {{super()}}
+<h3>Set a limit for the category</h3>
+<form action="/mpage_lim" method="post" name="form">
+  <div class="input-group mb-3">
+    <label class="input-group-text" for="inputGroupSelect01">Type</label>
+    <select class="form-select" id="inputGroupSelect01" name="type">
+      <option selected value="expense_lim">Expense</option>
+      <option value="credit_lim">Credit</option>
+    </select>
+  </div>
+  <div class="input-group mb-3">
+    <span class="input-group-text">Limit</span>
+    <input
+      type="number"
+      id="amount"
+      name="amount"
+      class="form-control"
+      aria-label="Dollar amount (with dot and two decimal places)"
+      required
+      min="0"
+      max="100000000"
+    />
+    <span class="input-group-text">$</span>
+  </div>
+  <input
+    type="submit"
+    class="btn btn-primary"
+    value="Write"
+    name="submit"
+    id="submit"
+  />
+  <input type="reset" class="btn btn-secondary" value="Reset form" />
+</form>
+{% endblock %} {% block second_col %}
+<h3>General information</h3>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Category</th>
+      <th>Sum</th>
+      <th>Limit</th>
+    </tr>
+  </thead>
+  <tbody class="table-group-divider">
+    {% for rec in records %}
+    <tr>
+      <td>{{rec.cat_name}}</td>
+      {% if rec.amount > rec.limit and rec.limit != 0 %}
+      <td style="color: red">{{rec.amount}}</td>
+      {% else %}
+      <td style="color: green">{{rec.amount}}</td>
+      {% endif %}
+      <td>{{rec.limit}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

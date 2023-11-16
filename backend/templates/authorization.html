@@ -1,0 +1,43 @@
+{% extends 'base.html' %} {% block main %} {{super()}}
+<div class="container-fluid tiny-container">
+  <h3>Authorization</h3>
+  <form action="" method="post">
+    <div class="form-floating mb-3">
+      <input
+        for="validationDefult01"
+        type="text"
+        class="form-control"
+        name="login"
+        minlength="2"
+        maxlength="50"
+        required
+      />
+      <label for="floatingInput">Login</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input
+        type="password"
+        class="form-control"
+        name="password"
+        minlength="2"
+        maxlength="100"
+        required
+      />
+      <label for="floatingPassword">Password</label>
+    </div>
+    <div class="form-check" style="text-align: left">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        name="remain"
+        id="flexCheckDefault"
+      />
+      <label class="form-check-label" for="flexCheckDefault">Remain me</label>
+    </div>
+    <br />
+    <input class="btn btn-primary" type="submit" value="Sign in" />
+    <input class="btn btn-secondary" type="reset" value="Reset form" />
+  </form>
+  <a href="{{url_for('registr')}}">No account yet</a>
+</div>
+{% endblock %}

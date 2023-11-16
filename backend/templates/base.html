@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="eng">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html/img; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="{{url_for('static', filename='favicon')}}"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="{{url_for('static', filename='favicon/favicon-32x32.png')}}"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="{{url_for('static', filename='/favicon/favicon-16x16.png')}}"
+    />
+    <link
+      rel="manifest"
+      href="{{url_for('static', filename='/favicon/site.webmanifest')}}"
+    />
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}" />
+    <script>
+      setTimeout(function () {
+        document.getElementById("flash").style.display = "none";
+      }, 4000);
+    </script>
+    <title>web finance</title>
+  </head>
+  <body>
+    <!-- injection js -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+    <nav
+      class="navbar navbar-expand-lg nav-underline"
+      style="
+        background-color: rgb(113, 223, 180);
+        font-style: oblique;
+        font-weight: 800;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: medium;
+      "
+    >
+      <div class="container-fluid mx-auto">
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNavAltMarkup"
+          aria-controls="navbarNavAltMarkup"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav">
+            {% if lnk==0 %}
+            <a class="nav-link active" href="/home">Home</a>
+            {% else %}
+            <a class="nav-link {{dis}}" href="/home">Home</a>
+            {% endif %} {% if lnk==1 %}
+            <a class="nav-link active" href="/accounts">Bank accounts</a>
+            {% else %}
+            <a class="nav-link {{dis}}" href="/accounts">Bank accounts</a>
+            {% endif %} {% if lnk==2 %}
+            <a class="nav-link active" href="/income">Income</a>
+            {% else %}
+            <a class="nav-link {{dis}}" href="/income">Income</a>
+            {% endif %} {% if lnk==3 %}
+            <a class="nav-link active" href="/expenses">Expenses</a>
+            {% else %}
+            <a class="nav-link {{dis}}" href="/expenses">Expenses</a>
+            {% endif %} {% if lnk==4 %}
+            <a class="nav-link active" href="/credits">Credits</a>
+            {%else %}
+            <a class="nav-link {{dis}}" href="/credits">Credits</a>
+            {%endif%}
+            <a class="nav-link {{dis}}" href="{{url_for('logout')}}"
+              >Sign out</a
+            >
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div class="container my-5 text-center">
+      {% if dis %} {% for cat, msg in get_flashed_messages(True) %}
+      <div class="flash {{cat}}" id="flash">{{msg}}</div>
+      {% endfor %} {% endif %} {% block main %}
+      <div class="row">
+        <div class="col-lg-4 col-sm-3 text-center">
+          {% block first_col %} {% endblock %} {% if not dis %} {% for cat, msg
+          in get_flashed_messages(True) %}
+          <div class="flash {{cat}}" id="flash">{{msg}}</div>
+          {% endfor %} {% endif %}
+        </div>
+        <div class="col-lg-8 col-sm-6 text-center">
+          {% block second_col %} {% endblock %}
+        </div>
+      </div>
+      {% endblock %}
+    </div>
+  </body>
+</html>

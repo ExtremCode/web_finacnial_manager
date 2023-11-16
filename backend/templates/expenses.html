@@ -1,0 +1,70 @@
+{% extends 'base.html' %} {% block first_col %} {{super()}}
+<h3>Input expense</h3>
+<form action="{{url_for('exp_parse')}}" method="post" name="form">
+  <div class="input-group mb-3">
+    <label class="input-group-text" for="inputGroupSelect01">Type</label>
+    <select class="form-select" id="inputGroupSelect01" name="type">
+      <option selected value="1">Groceries</option>
+      <option value="2">Restaurants</option>
+      <option value="3">Hobby</option>
+      <option value="4">Medicine</option>
+      <option value="5">Transport</option>
+      <option value="6">Sport</option>
+      <option value="7">Rental</option>
+      <option value="8">Another</option>
+    </select>
+  </div>
+  <div class="input-group mb-3">
+    <span class="input-group-text">Amount</span>
+    <input
+      type="number"
+      class="form-control"
+      aria-label="Dollar amount (with dot and two decimal places)"
+      name="amount"
+      min="0"
+      max="1000000000"
+      required
+    />
+    <span class="input-group-text">$</span>
+  </div>
+  <div class="input-group mb-3">
+    <span class="input-group-text">Date</span>
+    <input type="date" class="form-control" name="date" required />
+  </div>
+  <div class="input-group mb-3">
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        name="delcheck"
+        id="flexCheckDefault"
+      />
+      <label class="form-check-label" for="flexCheckDefault">
+        Delete the entered record
+      </label>
+    </div>
+  </div>
+  <input type="submit" class="btn btn-primary" value="Write" />
+  <input type="reset" class="btn btn-secondary" value="Reset from" />
+</form>
+{% endblock %} {% block second_col %} {{super()}}
+<h3>Latest expenses</h3>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Category</th>
+      <th>Sum</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody class="table-group-divider">
+    {% for rec in records %}
+    <tr>
+      <td>{{rec.cat_name}}</td>
+      <td>{{rec.amount}}</td>
+      <td>{{rec.rec_date}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
