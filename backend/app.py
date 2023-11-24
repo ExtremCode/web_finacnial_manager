@@ -73,13 +73,13 @@ def mpage_lim():
 def mpage():
     pers = current_user.get_info()
     exp_am = 0
-    for dict in dbase.get_records('expense', pers['person_id']):
+    for dict in dbase.get_records('expense', pers['person_id'], 30):
         exp_am += dict['amount']
     cred_am = 0
     for dict in dbase.get_records('credit', pers['person_id']):
         cred_am += dict['amount']
     inc_am = 0
-    for dict in dbase.get_records('income', pers['person_id']):
+    for dict in dbase.get_records('income', pers['person_id'], 30):
         inc_am += dict['amount']
     acc_am = 0
     for dict in dbase.get_records('account', pers['person_id']):
