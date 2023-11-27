@@ -1,17 +1,7 @@
-import psycopg2 as psg
-from psycopg2.extras import DictCursor
-
-
-
-login = 'postgres'
-pswd = 'rootroot'
 class DB:
-    def __init__(self):
-        self.__conn = psg.connect(host='localhost',
-                                database='financial',
-                                user=login,
-                                password=pswd)
-        self.__cursor = self.__conn.cursor(cursor_factory=DictCursor)
+    def __init__(self, connection, cursor):
+        self.__conn = connection
+        self.__cursor = cursor
     
     def get_person_by_id(self, person_id: int) -> dict or bool:
         try:
@@ -22,7 +12,7 @@ class DB:
                 return False
             return dict(res)
         except Exception as e:
-            print('error in get_person_by_id', e)
+            print('error in get_person_by_id: ', e)
             self.__conn.rollback()
             return False
     
@@ -35,7 +25,7 @@ class DB:
                 return False
             return dict(res)
         except Exception as e:
-            print('error in get_person_by_login', e)
+            print('error in get_person_by_login: ', e)
             self.__conn.rollback()
             return False
 
@@ -45,7 +35,7 @@ class DB:
                                   where person_id={person_id}")
             self.__conn.commit()
         except Exception as e:
-            print("error in update_lim", e)
+            print("error in update_lim: ", e)
             self.__conn.rollback()
             return False
         return True
@@ -69,7 +59,7 @@ class DB:
                 self.__conn.rollback()
                 return False
         except Exception as e:
-            print("error in write_record", e)
+            print("error in write_record: ", e)
             self.__conn.rollback()
             return False
         self.__conn.commit()
@@ -99,7 +89,7 @@ class DB:
                 self.__conn.rollback()
                 return {}
         except Exception as e:
-            print("error in get_records", e)
+            print("error in get_records: ", e)
             self.__conn.rollback()
             return {}
         return list(map(dict, self.__cursor.fetchall()))
@@ -123,7 +113,7 @@ class DB:
                 self.__conn.rollback()
                 return False
         except Exception as e:
-            print("error in del_record", e)
+            print("error in del_record: ", e)
             self.__conn.rollback()
             return False
         self.__conn.commit()

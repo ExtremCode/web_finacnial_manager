@@ -1,12 +1,13 @@
 from yoyo import read_migrations
 from yoyo import get_backend
 import psycopg2 as psg
+from psycopg2.extras import DictCursor
 
 
 login='postgres'
 pswd='rootroot'
 backend = get_backend(f'postgres://{login}:{pswd}@localhost/financial')
-migrations = read_migrations('web_financial_manager/backend/database/migrations')
+migrations = read_migrations('./backend/database/migrations')
 
 def rollback():
     with backend.lock():
@@ -16,22 +17,26 @@ def apply():
     with backend.lock():
         backend.apply_migrations(backend.to_apply(migrations))
 
-def init_db():
+def init_db() -> tuple:
     apply()
-    try:
-        conn = psg.connect(host="localhost",
+    conn = psg.connect(host="localhost",
                     database="financial",
                     user=login,
                     password=pswd)
-        cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=DictCursor)
+    try:
         cursor.execute("""
         insert into income_category(cat_name)
         values ('salary'),
         ('premiums'),
         ('investments'),
-        ('another');
+        ('another');""")
+    except Exception as e:
+        print("error in init_db()", e)
+        conn.rollback()
 
-        insert into expense_category(cat_name)
+    try:
+        cursor.execute("""insert into expense_category(cat_name)
         values ('groceries'),
         ('restaurants'),
         ('hobby'),
@@ -39,15 +44,18 @@ def init_db():
         ('transport'),
         ('sport'),
         ('rental'),
-        ('another');
-
-        insert into credit_category(cat_name)
+        ('another');""")
+    except Exception as e:
+        print("error in init_db()", e)
+        conn.rollback()
+    
+    try:
+        cursor.execute("""insert into credit_category(cat_name)
         values ('consumer credit'),
         ('mortgage'),
         ('car loan');""")
-    except:
-        print("inserting categories cannot be finished")
+    except Exception as e:
+        print("error in init_db()", e)
         conn.rollback()
     conn.commit()
-    cursor.close()
-    conn.close()
+    return conn, cursor
