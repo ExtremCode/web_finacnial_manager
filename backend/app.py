@@ -7,15 +7,15 @@ from UserLogin import UserLogin
 
 
 app = Flask(__name__)
-app.secret_key = 'SDKFMQWE7R34F8QFNASDFQ9fdsjkfn3409jreg<>}{)()*&()}'
+app.secret_key = 'SDKFMQWE7R34F8QFNASDFQ9fdsjkfn3409jreg<>}{)()*&()}'+ str(datetime.now())
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 login_manager.login_message = 'You must be authorized to view neccesary page'
 login_manager.login_message_category = 'error'
 
-init_db.init_db() # initialized database and apply neccessary migrations
-dbase = rep.DB()
+connection, cursor = init_db.init_db() # initialized database and apply neccessary migrations
+dbase = rep.DB(connection, cursor)
 
 @login_manager.user_loader
 def load_user(person_id):
@@ -48,7 +48,6 @@ def registr():
     if request.method == 'POST':
         login = request.form['login']
         pswd = generate_password_hash(request.form['password_first'])
-        print(len(pswd), pswd)
         if request.form['password_first'] != request.form['password_second']:
             flash('Passwords are not the same', category='error')
         elif dbase.write_record(table_name='person', person=login, 
