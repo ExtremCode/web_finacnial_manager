@@ -32,7 +32,7 @@ def init_db() -> tuple:
         ('investments'),
         ('another');""")
     except Exception as e:
-        print("error in init_db()", e)
+        print("error in init_db(): ", e)
         conn.rollback()
 
     try:
@@ -46,7 +46,7 @@ def init_db() -> tuple:
         ('rental'),
         ('another');""")
     except Exception as e:
-        print("error in init_db()", e)
+        print("error in init_db(): ", e)
         conn.rollback()
     
     try:
@@ -55,7 +55,7 @@ def init_db() -> tuple:
         ('mortgage'),
         ('car loan');""")
     except Exception as e:
-        print("error in init_db()", e)
+        print("error in init_db(): ", e)
         conn.rollback()
     conn.commit()
     return conn, cursor
