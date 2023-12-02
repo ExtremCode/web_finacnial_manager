@@ -1,13 +1,9 @@
 import psycopg2 as psg
+from backend.database.settings import PostgresSettings
 
 
-login = 'postgres'
-pswd = 'rootroot'
 def tests():
-    conn = psg.connect(host="localhost",
-                    database="financial",
-                    user=login,
-                    password=pswd)
+    conn = psg.connect(PostgresSettings().url)
     cursor = conn.cursor()
 
     # test data

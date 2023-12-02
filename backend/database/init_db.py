@@ -2,11 +2,10 @@ from yoyo import read_migrations
 from yoyo import get_backend
 import psycopg2 as psg
 from psycopg2.extras import DictCursor
+from database.settings import PostgresSettings
 
 
-login='postgres'
-pswd='rootroot'
-backend = get_backend(f'postgres://{login}:{pswd}@localhost/financial')
+backend = get_backend(PostgresSettings().url)
 migrations = read_migrations('./backend/database/migrations')
 
 def rollback():
@@ -19,10 +18,7 @@ def apply():
 
 def init_db() -> tuple:
     apply()
-    conn = psg.connect(host="localhost",
-                    database="financial",
-                    user=login,
-                    password=pswd)
+    conn = psg.connect(PostgresSettings().url)
     cursor = conn.cursor(cursor_factory=DictCursor)
     try:
         cursor.execute("""
