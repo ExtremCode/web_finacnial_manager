@@ -31,11 +31,7 @@
       href="{{url_for('static', filename='/favicon/site.webmanifest')}}"
     />
     <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}" />
-    <script>
-      setTimeout(function () {
-        document.getElementById("flash").style.display = "none";
-      }, 4000);
-    </script>
+    <script src="{{url_for('static', filename='script.js')}}"></script>
     <title>web finance</title>
   </head>
   <body>

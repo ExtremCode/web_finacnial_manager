@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import Flask, render_template, request, flash, redirect, url_for, send_file
 from datetime import datetime
 from database import repository as rep, init_db
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -67,6 +67,14 @@ def mpage_lim():
         flash('Limit cannot be updated', 'error')
     return redirect(url_for('mpage'))
 
+@app.route('/export_xml', methods=['GET'])
+def export():
+    xml_str = dbase.export_to_xml(current_user.get_id())
+    with open('database/xml_dump.xml', 'w') as file:
+        file.write(xml_str)
+    return send_file('database/xml_dump.xml', mimetype='text/xml')
+    
+
 @app.route('/home', methods=['GET', 'POST'])
 @login_required
 def mpage():
@@ -84,7 +92,6 @@ def mpage():
     for dict in dbase.get_records('account', pers['person_id']):
         acc_am += dict['amount']
     
-
     records = [{'cat_name' : 'expense', 'amount': exp_am, 'limit': pers['expense_lim']},
             {'cat_name' : 'credit', 'amount': cred_am, 'limit': pers['credit_lim']},
             {'cat_name' : 'income', 'amount': inc_am, 'limit': 0},

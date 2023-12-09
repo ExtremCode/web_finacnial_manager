@@ -36,9 +36,9 @@ class DB:
 
     def update_lim(self, person_id: int, name_limit: str, value: int) -> bool:
         try:
-            self.__cursor.execute("""
-                                  update person set %(name_lim)s = %(val)s
-                                  where person_id = %(id)s;""", 
+            self.__cursor.execute(sql.SQL("""update person set {} = %(val)s 
+                                          where person_id = %(id)s;""")\
+                                            .format(sql.Identifier(name_limit)),
                                   {'name_lim': name_limit, 'val': value, 'id': person_id})
             self.__conn.commit()
         except Exception as e:
@@ -101,12 +101,14 @@ class DB:
                 self.__cursor.execute("""
                             select cat_name, amount
                             from credit inner join credit_category using(cat_id)
-                            where person_id = %s;""", [person_id])
+                            where person_id = %s
+                            order by amount desc""", [person_id])
             elif table_name == 'account':
                 self.__cursor.execute("""
                             select acc_name, amount
                             from account
-                            where person_id = %s;""", [person_id])
+                            where person_id = %s
+                            order by amount desc""", [person_id])
             else:
                 self.__conn.rollback()
                 return {}
@@ -130,12 +132,15 @@ class DB:
                                     where amount = %(amnt)s and rec_date = %(date)s
                                     and cat_id = %(cat)s and person_id = %(id)s
                                     order by 1 desc
-                                    limit 1);""")\
+                                    limit 1)
+                            returning person_id""")\
                                         .format(sql.Identifier(table_name),
                                                 sql.Identifier(table_name[:3] + '_id'),
                                                 sql.Identifier(table_name[:3] + '_id'),
                                                 sql.Identifier(table_name)),
                             {'amnt': amount, 'date': date, 'cat': category, 'id': person_id})
+                if len(self.__cursor.fetchall()) == 0:
+                    return False
             elif table_name == 'credit':
                 self.__cursor.execute("""
                             delete from credit
@@ -145,8 +150,11 @@ class DB:
                                       where cat_id = %(cat)s and amount = %(amnt)s
                                       and person_id = %(id)s
                                       order by cred_id desc
-                                      limit 1);""", 
+                                      limit 1)
+                            returning person_id""", 
                                 {'amnt': amount, 'cat': category, 'id': person_id})
+                if len(self.__cursor.fetchall()) == 0:
+                    return False
             elif table_name == 'account':
                 self.__cursor.execute("""
                             delete from account
@@ -157,8 +165,11 @@ class DB:
                                 where acc_name = %(acc)s
                                 and amount = %(amnt)s and person_id = %(id)s
                                 order by acc_id desc
-                                limit 1);""",
+                                limit 1)
+                            returning person_id""",
                                 {'acc': acc_name, 'amnt': amount, 'id': person_id})
+                if len(self.__cursor.fetchall()) == 0:
+                    return False
             else:
                 self.__conn.rollback()
                 return False
@@ -168,6 +179,40 @@ class DB:
             return False
         self.__conn.commit()
         return True
+    
+    def export_to_xml(self, person_id: int) -> str:
+        try:
+            result = """<?xml version="1.0" encoding="utf-8"?>\n<data>\n"""
+            self.__cursor.execute(f"""select query_to_xml(
+               'select login, expense_lim as limit_of_expenses,
+               credit_lim as limit_of_credits
+               from person where person_id = {person_id}', true, false, '')""")
+            result += self.__cursor.fetchall()[0][0].replace("table", "person")
+            self.__cursor.execute(f"""select query_to_xml(
+               'select cat_name as category, amount, rec_date as date  
+               from income inner join income_category using(cat_id)
+                where person_id = {person_id}', true, false, '')""")
+            result += "\n" + self.__cursor.fetchall()[0][0].replace("table", "income")
+            self.__cursor.execute(f"""select query_to_xml(
+               'select cat_name as category, amount, rec_date as date 
+               from expense inner join expense_category using(cat_id)
+                where person_id = {person_id}', true, false, '')""")
+            result += "\n" + self.__cursor.fetchall()[0][0].replace("table", "expenses")
+            self.__cursor.execute(f"""select query_to_xml(
+               'select cat_name as category_of_credit, amount
+               from credit inner join credit_category using(cat_id)
+                where person_id = {person_id}', true, false, '')""")
+            result += "\n" + self.__cursor.fetchall()[0][0].replace("table", "credits")
+            self.__cursor.execute(f"""select query_to_xml(
+               'select acc_name as account_name, amount
+               from account where person_id = {person_id}', true, false, '')""")
+            result += "\n" + self.__cursor.fetchall()[0][0].replace("table", "bank_accounts") + \
+            "</data>"
+        except Exception as e:
+            print("error in export_to_xml: ", e)
+            self.__conn.rollback()
+            return ""
+        return result
     
     def close(self):
         if not (self.__conn.closed or self.__cursor.closed):
