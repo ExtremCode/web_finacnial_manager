@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE ISSPECS SYSTEM "backend/database/technical information/ISSpecs.dtd">
+<ISSPECS>
+	<DESCRIPTION>
+		<TITLE>Financial</TITLE>
+		<SUBJ>customers and their list of expenses, income, credits and bank accounts </SUBJ>
+	</DESCRIPTION>
+	<DATA>
+		<ENTITY ent_id="person">
+			<PROPERTY>unique login</PROPERTY>
+			<PROPERTY>length of login is under 50 chars</PROPERTY>
+		</ENTITY>
+		<ENTITY ent_id="income">
+			<PROPERTY>date must be earlier than or equal nowday</PROPERTY>
+		</ENTITY>
+		<ENTITY ent_id="expense">
+			<PROPERTY>date must be earlier than or equal nowday</PROPERTY>
+		</ENTITY>
+		<ENTITY ent_id="credit">
+			<PROPERTY>amount is integer</PROPERTY>
+		</ENTITY>
+		<ENTITY ent_id="account">
+			<PROPERTY>limits are integer</PROPERTY>
+		</ENTITY>
+		<ENTITY ent_id="income_category">
+			<PROPERTY>unique category name</PROPERTY>
+			<PROPERTY>length of name is under 50 chars</PROPERTY>
+		</ENTITY>
+		<ENTITY ent_id="expense_category">
+			<PROPERTY>unique category name</PROPERTY>
+			<PROPERTY>length of name is under 50 chars</PROPERTY>
+		</ENTITY>
+		<ENTITY ent_id="credit_category">
+			<PROPERTY>unique category name</PROPERTY>
+			<PROPERTY>length of name is under 50 chars</PROPERTY>
+		</ENTITY>
+		<RELATIONSHIP ent_ids="income">
+			<PROPERTY>one to many</PROPERTY>
+		</RELATIONSHIP>
+		<RELATIONSHIP ent_ids="expense">
+			<PROPERTY>one to many</PROPERTY>
+		</RELATIONSHIP>
+		<RELATIONSHIP ent_ids="credit">
+			<PROPERTY>one to many</PROPERTY>
+		</RELATIONSHIP>
+		<RELATIONSHIP ent_ids="account">
+			<PROPERTY>one to many</PROPERTY>
+		</RELATIONSHIP>
+		<RELATIONSHIP ent_ids="income_category">
+			<PROPERTY>many to one</PROPERTY>
+		</RELATIONSHIP>
+		<RELATIONSHIP ent_ids="expense_category">
+			<PROPERTY>many to one</PROPERTY>
+		</RELATIONSHIP>
+		<RELATIONSHIP ent_ids="credit_category">
+			<PROPERTY>many to one</PROPERTY>
+		</RELATIONSHIP>
+		<CONSTRAINT>amount or limits must be under 10^10</CONSTRAINT>
+	</DATA>
+	<ROLES>
+		<ROLE>
+			<TITLE>user</TITLE>
+			<RESPONSIBILITY>correct recording of monetary transactions</RESPONSIBILITY>
+			<TOTALUSERS>unlimited</TOTALUSERS>
+		</ROLE>
+	</ROLES>
+	<TECHSPEC>
+		<TYPE>web-application</TYPE>
+		<DEVTOOLS>
+			<DEV>Python 3.9</DEV>
+		</DEVTOOLS>
+		<DBMS>
+			<TITLE>PostgreSQL</TITLE>
+			<VERSION>15</VERSION>
+			<REASONING>well known, I need a relational representation</REASONING>
+		</DBMS>
+		<TESTING>
+			<TEST>There are tests in tests.py</TEST>
+		</TESTING>
+	</TECHSPEC>
+</ISSPECS>
