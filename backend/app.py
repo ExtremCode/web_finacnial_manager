@@ -4,6 +4,8 @@ from database import repository as rep, init_db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from UserLogin import UserLogin
+import pandas as pd
+from statsmodels.tsa.arima.model import ARIMA
 
 
 app = Flask(__name__)
@@ -74,7 +76,6 @@ def export():
         file.write(xml_str)
     return send_file('database/xml_dump.xml', mimetype='text/xml')
     
-
 @app.route('/home', methods=['GET', 'POST'])
 @login_required
 def mpage():
@@ -120,6 +121,20 @@ def acc_parse():
 def acc():
     return render_template('accounts.html', 
                            records=dbase.get_records('account', current_user.get_id()), lnk=1)
+
+@app.route('/income_analysis', methods=['GET'])
+def inc_analysis() -> str:
+    df = pd.DataFrame(dbase.get_timeseries('income', current_user.get_id()))
+    train = df.drop([df.shape[0]-1])
+    if train.shape[0] < 2:
+        return ''
+    train = train.drop('time_id', axis=1)
+    model = ARIMA(train)
+    model = model.fit()
+    train.loc[train.shape[0]] = model.forecast(1).iloc[0]
+    train['date'] = df.time_id
+    train = train.ffill()
+    return train.to_csv(index=False)
 
 @app.route('/inc_parse', methods=['POST'])
 def inc_parse():
@@ -171,6 +186,20 @@ def cred_parse():
 def cred():
     return render_template('credits.html', 
                            records=dbase.get_records('credit', current_user.get_id()), lnk=4)
+
+@app.route('/expense_analysis', methods=['GET'])
+def exp_analysis() -> str:
+    df = pd.DataFrame(dbase.get_timeseries('expense', current_user.get_id()))
+    train = df.drop([df.shape[0]-1])
+    if train.shape[0] < 2:
+        return ''
+    train = train.drop('time_id', axis=1)
+    model = ARIMA(train)
+    model = model.fit()
+    train.loc[train.shape[0]] = model.forecast(1).iloc[0]
+    train['date'] = df.time_id
+    train = train.ffill()
+    return train.to_csv(index=False)
 
 @app.route('/exp_parse', methods=['POST'])
 def exp_parse():
