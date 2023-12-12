@@ -33,28 +33,34 @@
 </form>
 {% endblock %} {% block second_col %}
 <h3>General information</h3>
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th>Category</th>
-      <th>Sum</th>
-      <th>Limit</th>
-    </tr>
-  </thead>
-  <tbody class="table-group-divider">
-    {% for rec in records %}
-    <tr>
-      <td>{{rec.cat_name}}</td>
-      {% if rec.amount > rec.limit and rec.limit != 0 %}
-      <td style="color: red">{{rec.amount}}</td>
-      {% else %}
-      <td style="color: green">{{rec.amount}}</td>
-      {% endif %}
-      <td>{{rec.limit}}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="scroll-table mb-3">
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Sum</th>
+        <th>Limit</th>
+      </tr>
+    </thead>
+  </table>
+  <div class="scroll-table-body">
+    <table>
+      <tbody>
+        {% for rec in records %}
+        <tr>
+          <td>{{rec.cat_name}}</td>
+          {% if rec.amount > rec.limit and rec.limit != 0 %}
+          <td style="color: red">{{rec.amount}}</td>
+          {% else %}
+          <td style="color: green">{{rec.amount}}</td>
+          {% endif %}
+          <td>{{rec.limit}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 <a href="{{url_for('export')}}" class="button btn btn-primary" download
   >download all data</a
 >

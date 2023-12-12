@@ -52,22 +52,51 @@
 </form>
 {% endblock %} {% block second_col %} {{super()}}
 <h3>Latest income</h3>
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th>Category</th>
-      <th>Sum</th>
-      <th>Date</th>
-    </tr>
-  </thead>
-  <tbody class="table-group-divider">
-    {% for rec in records %}
-    <tr>
-      <td>{{rec.cat_name}}</td>
-      <td>{{rec.amount}}</td>
-      <td>{{rec.rec_date}}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="scroll-table mb-3">
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Sum</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+  </table>
+  <div class="scroll-table-body">
+    <table>
+      <tbody>
+        {% for rec in records %}
+        <tr>
+          <td>{{rec.cat_name}}</td>
+          <td>{{rec.amount}}</td>
+          <td>{{rec.rec_date}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %} {% block button %}
+<button class="btn btn-primary mb-3" id="show_button">analysis</button>
+{% endblock %} {% block graph %}
+<canvas class="option" id="myChart" width="400" height="200"></canvas>
+<div class="option lead">The latest value is predicted</div>
+<script type="text/javascript">
+  async function getData() {
+    const xs = [];
+    const ys = [];
+    const response = await fetch("/income_analysis");
+    const data = await response.text();
+    const previous = data.split(/\n/).slice(1);
+    const table = previous.slice(0, -1);
+    table.forEach((row) => {
+      const columns = row.split(",");
+      const year = columns[1];
+      xs.push(year);
+      const amount = columns[0];
+      ys.push(parseFloat(amount));
+    });
+    return { xs, ys };
+  }
+</script>
 {% endblock %}

@@ -43,20 +43,26 @@
 </form>
 {% endblock %} {% block second_col %} {{super()}}
 <h3>List of accounts</h3>
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Sum</th>
-    </tr>
-  </thead>
-  <tbody class="table-group-divider">
-    {% for rec in records %}
-    <tr>
-      <td>{{rec.acc_name}}</td>
-      <td>{{rec.amount}}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="scroll-table mb-3">
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Sum</th>
+      </tr>
+    </thead>
+  </table>
+  <div class="scroll-table-body">
+    <table>
+      <tbody>
+        {% for rec in records %}
+        <tr>
+          <td>{{rec.acc_name}}</td>
+          <td>{{rec.amount}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 {% endblock %}

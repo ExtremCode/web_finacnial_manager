@@ -111,11 +111,11 @@ class DB:
                             order by amount desc""", [person_id])
             else:
                 self.__conn.rollback()
-                return {}
+                return []
         except Exception as e:
             print("error in get_records: ", e)
             self.__conn.rollback()
-            return {}
+            return []
         return list(map(dict, self.__cursor.fetchall()))
 
     def del_record(self, table_name: str, amount: int, person_id: int, date='', 
@@ -213,6 +213,29 @@ class DB:
             self.__conn.rollback()
             return ""
         return result
+    
+    def get_timeseries(self, table_name: str, person_id: int) -> list[dict]:
+        """"
+        get timeseries of operations over the last 180 days period
+        only for expense and income tables
+        """
+        try:
+            if table_name not in ['expense', 'income']:
+                return []
+            self.__cursor.execute(sql.SQL("""
+               select concat(extract(year from rec_date),'-',
+                            lpad(cast(extract(month from rec_date) as text), 2, cast('0' as text))) as time_id,
+               sum(amount) as value
+               from {}
+               where current_date - rec_date <= 180 and person_id = %s
+               group by extract(month from rec_date), extract(year from rec_date)
+               order by 1;
+               """).format(sql.Identifier(table_name)), [person_id])
+        except Exception as e:
+            print("error in get_timeseries: ", e)
+            self.__conn.rollback()
+            return []
+        return list(map(dict, self.__cursor.fetchall()))
     
     def close(self):
         if not (self.__conn.closed or self.__cursor.closed):

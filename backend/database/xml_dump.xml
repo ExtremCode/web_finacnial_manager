@@ -5,7 +5,7 @@
 <row>
   <login>leff</login>
   <limit_of_expenses>4</limit_of_expenses>
-  <limit_of_credits>10</limit_of_credits>
+  <limit_of_credits>500</limit_of_credits>
 </row>
 
 </person>
@@ -88,6 +88,48 @@
   <date>2023-11-27</date>
 </row>
 
+<row>
+  <category>groceries</category>
+  <amount>1</amount>
+  <date>2023-12-10</date>
+</row>
+
+<row>
+  <category>groceries</category>
+  <amount>1</amount>
+  <date>2023-12-08</date>
+</row>
+
+<row>
+  <category>medicine</category>
+  <amount>6</amount>
+  <date>2023-10-11</date>
+</row>
+
+<row>
+  <category>rental</category>
+  <amount>15</amount>
+  <date>2023-09-14</date>
+</row>
+
+<row>
+  <category>sport</category>
+  <amount>11</amount>
+  <date>2023-10-20</date>
+</row>
+
+<row>
+  <category>hobby</category>
+  <amount>9</amount>
+  <date>2023-09-15</date>
+</row>
+
+<row>
+  <category>another</category>
+  <amount>15</amount>
+  <date>2023-10-06</date>
+</row>
+
 </expenses>
 
 <credits xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -107,6 +149,11 @@
   <amount>1</amount>
 </row>
 
+<row>
+  <category_of_credit>consumer credit</category_of_credit>
+  <amount>500</amount>
+</row>
+
 </credits>
 
 <bank_accounts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -114,6 +161,16 @@
 <row>
   <account_name>first</account_name>
   <amount>99900</amount>
+</row>
+
+<row>
+  <account_name>Boss Of The Gym</account_name>
+  <amount>5</amount>
+</row>
+
+<row>
+  <account_name>Jo</account_name>
+  <amount>10</amount>
 </row>
 
 </bank_accounts>
