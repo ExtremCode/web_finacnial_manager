@@ -6,7 +6,7 @@ from database.settings import PostgresSettings
 
 
 backend = get_backend(PostgresSettings().url)
-migrations = read_migrations('./backend/database/migrations')
+migrations = read_migrations('./database/migrations')
 
 def rollback():
     with backend.lock():

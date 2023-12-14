@@ -1,0 +1,45 @@
+{% extends 'base.html' %} {% block first_col %} {{super()}}
+<h3>Choose user</h3>
+<form action="{{url_for('delete_user')}}" method="post" name="form">
+  <div class="input-group mb-4">
+    <label class="input-group-text">Login</label>
+    <input
+      type="text"
+      class="form-control"
+      minlength="2"
+      maxlength="50"
+      name="login"
+      required
+    />
+  </div>
+  <input
+    type="submit"
+    class="btn btn-primary"
+    style="background-color: brown"
+    value="Delete"
+  />
+  <input type="reset" class="btn btn-secondary" value="Reset from" />
+</form>
+{% endblock %} {% block second_col %} {{super()}}
+<h3>List of users</h3>
+<div class="scroll-table mb-3">
+  <table>
+    <thead>
+      <tr>
+        <th>Login</th>
+      </tr>
+    </thead>
+  </table>
+  <div class="scroll-table-body" style="height: 400">
+    <table>
+      <tbody>
+        {% for rec in records %}
+        <tr>
+          <td>{{rec.login}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

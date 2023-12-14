@@ -1,5 +1,5 @@
 import psycopg2 as psg
-from backend.database.settings import PostgresSettings
+from database.settings import PostgresSettings
 
 
 def tests():

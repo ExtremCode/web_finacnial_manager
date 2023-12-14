@@ -31,6 +31,8 @@ def login():
             if check_password_hash(person['password'], request.form['password']):
                 remain = True if request.form.get('remain') else False
                 login_user(UserLogin().create(person), remember=remain)
+                if request.form['login'] == 'admin':
+                    return redirect(url_for('admin'))
                 return redirect(request.args.get('next') or url_for('mpage'))
             flash('Incorrect password', 'error')
         else:
@@ -59,6 +61,20 @@ def registr():
         flash('This login already exist', category='error')
     
     return render_template('registration.html', dis='disabled')
+
+@app.route('/delete_user', methods=['POST'])
+def delete_user():
+    if dbase.del_record('person', login=request.form['login']):
+        flash('Person was deleted successfully', category='success')
+    else:
+        flash('Something wrong with removing person', category='error')
+    return redirect(url_for('admin'))
+
+@app.route('/admin_panel', methods=['GET', 'POST'])
+@login_required
+def admin():
+    records = dbase.get_users()
+    return render_template('admin.html', records=records, admin='admin', dis='disabled')
 
 @app.route('/mpage_lim', methods=['POST'])
 def mpage_lim():
@@ -125,9 +141,9 @@ def acc():
 @app.route('/income_analysis', methods=['GET'])
 def inc_analysis() -> str:
     df = pd.DataFrame(dbase.get_timeseries('income', current_user.get_id()))
-    train = df.drop([df.shape[0]-1])
-    if train.shape[0] < 2:
+    if df.shape[0] < 3:
         return ''
+    train = df.drop([df.shape[0]-1])
     train = train.drop('time_id', axis=1)
     model = ARIMA(train)
     model = model.fit()
@@ -190,9 +206,9 @@ def cred():
 @app.route('/expense_analysis', methods=['GET'])
 def exp_analysis() -> str:
     df = pd.DataFrame(dbase.get_timeseries('expense', current_user.get_id()))
-    train = df.drop([df.shape[0]-1])
-    if train.shape[0] < 2:
+    if df.shape[0] < 3:
         return ''
+    train = df.drop([df.shape[0]-1])
     train = train.drop('time_id', axis=1)
     model = ARIMA(train)
     model = model.fit()
