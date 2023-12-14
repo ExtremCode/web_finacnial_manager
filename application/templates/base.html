@@ -89,10 +89,11 @@
             <a class="nav-link active" href="/credits">Credits</a>
             {%else %}
             <a class="nav-link {{dis}}" href="/credits">Credits</a>
-            {%endif%}
-            <a class="nav-link {{dis}}" href="{{url_for('logout')}}"
-              >Sign out</a
-            >
+            {%endif%} {% if admin=='admin' %}
+            <a class="nav-link active" href="{{url_for('logout')}}">Sign out</a>
+            {% else %}
+            <a class="nav-link {{dis}}" href="{{url_for('logout')}}">Sign out</a
+            >{% endif %}
           </div>
         </div>
       </div>

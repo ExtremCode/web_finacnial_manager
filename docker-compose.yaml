@@ -1,0 +1,22 @@
+version: "3.1"
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    ports: 5432:5432
+    volumes:
+      - ./db:/var/lib/postgresql/data/pgdata
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_DB=mydatabase
+      - POSTGRES_PASSWORD=12345
+      - PGDATA=/var/lib/postgresql/data/pgdata
+  app:
+    build: .
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_DB=mydatabase
+      - POSTGRES_PASSWORD=12345
+    depends_on:
+      - db

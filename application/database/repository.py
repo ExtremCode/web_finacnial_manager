@@ -117,9 +117,22 @@ class DB:
             self.__conn.rollback()
             return []
         return list(map(dict, self.__cursor.fetchall()))
+    
+    def get_users(self) -> list[dict]:
+        try:
+            self.__cursor.execute("""
+                                select login
+                                from person
+                                where login <> 'admin'
+                                order by 1""")
+        except Exception as e:
+            print("error in get_users: ", e)
+            self.__conn.rollback()
+            return []
+        return list(map(dict, self.__cursor.fetchall()))
 
-    def del_record(self, table_name: str, amount: int, person_id: int, date='', 
-                    category=0, acc_name='') -> bool:
+    def del_record(self, table_name: str, amount=0, person_id=0, date='', 
+                    category=0, acc_name='', login='') -> bool:
         try:
             if table_name =='income' or table_name == 'expense':
                 self.__cursor.execute(sql.SQL("""
@@ -168,6 +181,13 @@ class DB:
                                 limit 1)
                             returning person_id""",
                                 {'acc': acc_name, 'amnt': amount, 'id': person_id})
+                if len(self.__cursor.fetchall()) == 0:
+                    return False
+            elif table_name == 'person':
+                self.__cursor.execute("""
+                            delete from person
+                            where login = %s
+                            returning person_id""", [login])
                 if len(self.__cursor.fetchall()) == 0:
                     return False
             else:
