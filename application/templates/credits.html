@@ -4,13 +4,13 @@
   <div class="input-group mb-4">
     <label class="input-group-text" for="inputGroupSelect01">Type</label>
     <select class="form-select" id="inputGroupSelect01" name="type">
-      <option selected value="1">Consumer credit</option>
-      <option value="2">Mortgage</option>
-      <option value="3">Car loan</option>
+      {% for cat in categories %}
+      <option value="{{cat.id}}">{{cat.cat_name}}</option>
+      {% endfor %}
     </select>
   </div>
   <div class="input-group mb-3">
-    <span class="input-group-text">Monthly payment</span>
+    <span class="input-group-text">Total amount</span>
     <input
       type="number"
       class="form-control"
@@ -39,7 +39,7 @@
   <input type="reset" class="btn btn-secondary" value="Reset from" />
 </form>
 {% endblock %} {% block second_col %} {{super()}}
-<h3>List of credits</h3>
+<h3>The list of credits</h3>
 <div class="scroll-table mb-3">
   <table>
     <thead>
@@ -62,4 +62,41 @@
     </table>
   </div>
 </div>
+{% endblock %} {% block cat_form %}
+<form action="{{url_for('cred_category')}}" method="post" name="form">
+  <div class="input-group mb-3">
+    <span class="input-group-text">New category</span>
+    <input
+      type="text"
+      id="cat_name"
+      name="cat_name"
+      class="form-control"
+      required
+      minlength="3"
+      maxlength="50"
+      placeholder="category name"
+    />
+  </div>
+  <div class="input-group mb-3">
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        name="delcheck"
+        id="flexCheckDefault"
+      />
+      <label class="form-check-label" for="flexCheckDefault">
+        Delete the entered category
+      </label>
+    </div>
+  </div>
+  <input
+    type="submit"
+    class="btn btn-primary"
+    value="Write"
+    name="submit"
+    id="submit"
+  />
+  <input type="reset" class="btn btn-secondary" value="Reset form" />
+</form>
 {% endblock %}

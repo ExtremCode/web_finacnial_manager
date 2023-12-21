@@ -3,7 +3,7 @@ from yoyo import step
 
 __depends__ = {'000.schema'}
 UPGRADE = """
-create table person (
+create table if not exists person (
 person_id serial primary key,
 login varchar(50) not null,
 password varchar(300) not null,
@@ -14,25 +14,25 @@ constraint exp_lim_check check (expense_lim between 0 and 10^10),
 constraint cred_lim_check check(credit_lim between 0 and 10^10)
 );
 
-create table income_category(
+create table if not exists income_category(
 cat_id smallserial primary key,
 cat_name varchar(50) not null,
 unique(cat_name)
 );
 
-create table expense_category(
+create table if not exists expense_category(
 cat_id smallserial primary key,
 cat_name varchar(50) not null,
 unique(cat_name)
 );
 
-create table credit_category(
+create table if not exists credit_category(
 cat_id smallserial primary key,
 cat_name varchar(50) not null,
 unique(cat_name)
 );
 
-create table income (
+create table if not exists income (
 inc_id serial primary key,
 amount int not null,
 rec_date date not null,
@@ -44,7 +44,7 @@ constraint amount_check check (amount between 0 and 10^10),
 constraint rec_date_check check (rec_date <= current_date)
 );
 
-create table expense (
+create table if not exists expense (
 exp_id serial primary key,
 amount int not null,
 rec_date date not null,
@@ -56,7 +56,7 @@ constraint amount_check check (amount between 0 and 10^10),
 constraint rec_date_check check (rec_date <= current_date)
 );
 
-create table credit (
+create table if not exists credit (
 cred_id smallserial primary key,
 amount int not null,
 cat_id smallint not null,
@@ -66,7 +66,7 @@ foreign key (cat_id) references credit_category (cat_id) on delete cascade on up
 constraint amount_check check (amount between 0 and 10^10)
 );
 
-create table account (
+create table if not exists account (
 acc_id smallserial primary key,
 acc_name varchar(50) not null,
 amount int not null,

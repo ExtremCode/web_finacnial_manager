@@ -4,10 +4,9 @@
   <div class="input-group mb-3">
     <label class="input-group-text" for="inputGroupSelect01">Type</label>
     <select class="form-select" id="inputGroupSelect01" name="type">
-      <option selected value="1">Salary</option>
-      <option value="2">Premiums</option>
-      <option value="3">Investments</option>
-      <option value="4">Another</option>
+      {% for cat in categories %}
+      <option value="{{cat.id}}">{{cat.cat_name}}</option>
+      {% endfor %}
     </select>
   </div>
   <div class="input-group mb-3">
@@ -76,6 +75,43 @@
     </table>
   </div>
 </div>
+{% endblock %} {% block cat_form %}
+<form action="{{url_for('inc_category')}}" method="post" name="form">
+  <div class="input-group mb-3">
+    <span class="input-group-text">New category</span>
+    <input
+      type="text"
+      id="cat_name"
+      name="cat_name"
+      class="form-control"
+      required
+      minlength="3"
+      maxlength="50"
+      placeholder="category name"
+    />
+  </div>
+  <div class="input-group mb-3">
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        name="delcheck"
+        id="flexCheckDefault"
+      />
+      <label class="form-check-label" for="flexCheckDefault">
+        Delete the entered category
+      </label>
+    </div>
+  </div>
+  <input
+    type="submit"
+    class="btn btn-primary"
+    value="Write"
+    name="submit"
+    id="submit"
+  />
+  <input type="reset" class="btn btn-secondary" value="Reset form" />
+</form>
 {% endblock %} {% block button %}
 <button class="btn btn-primary mb-3" id="show_button">analysis</button>
 {% endblock %} {% block graph %}

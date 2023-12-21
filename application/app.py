@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, send_file
 from datetime import datetime
-from database import repository as rep, init_db
+from database import repository as rep
+from database.init_db import init_db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from UserLogin import UserLogin
@@ -16,8 +17,8 @@ login_manager.login_view = 'login'
 login_manager.login_message = 'You must be authorized to view neccesary page'
 login_manager.login_message_category = 'error'
 
-connection, cursor = init_db.init_db() # initialized database and apply neccessary migrations
-dbase = rep.DB(connection, cursor)
+init_db() # initialized database and apply neccessary migrations
+dbase = rep.DB()
 
 @login_manager.user_loader
 def load_user(person_id):
@@ -96,25 +97,24 @@ def export():
 @login_required
 def mpage():
     pers = current_user.get_info()
-    exp_am = 0
-    for dict in dbase.get_records('expense', pers['person_id'], 30):
-        exp_am += dict['amount']
-    cred_am = 0
-    for dict in dbase.get_records('credit', pers['person_id']):
-        cred_am += dict['amount']
-    inc_am = 0
-    for dict in dbase.get_records('income', pers['person_id'], 30):
-        inc_am += dict['amount']
-    acc_am = 0
-    for dict in dbase.get_records('account', pers['person_id']):
-        acc_am += dict['amount']
-    
-    records = [{'cat_name' : 'expense', 'amount': exp_am, 'limit': pers['expense_lim']},
-            {'cat_name' : 'credit', 'amount': cred_am, 'limit': pers['credit_lim']},
-            {'cat_name' : 'income', 'amount': inc_am, 'limit': 0},
-            {'cat_name' : 'account', 'amount': acc_am, 'limit': 0}]
-
-    return render_template('main_page.html', records=records, lnk=0)
+    exp_am = dbase.get_amount('expense', pers['person_id'])
+    inc_am = dbase.get_amount('income', pers['person_id'])
+    records = [
+            {'cat_name' : 'expense',
+             'amount': exp_am,
+             'limit': pers['expense_lim']},
+            {'cat_name' : 'credit', 
+             'amount': dbase.get_amount('credit', pers['person_id']),
+             'limit': pers['credit_lim']},
+            {'cat_name' : 'income',
+             'amount': inc_am,
+             'limit': 0},
+            {'cat_name' : 'account',
+             'amount': dbase.get_amount('account', pers['person_id']),
+             'limit': 0}
+               ]
+    prof = inc_am - exp_am
+    return render_template('main_page.html', profit=prof, records=records, lnk=0)
 
 @app.route('/acc_parse', methods=['POST'])
 def acc_parse():
@@ -138,6 +138,19 @@ def acc():
     return render_template('accounts.html', 
                            records=dbase.get_records('account', current_user.get_id()), lnk=1)
 
+@app.route('/inc_category', methods=['POST'])
+def inc_category():
+    if request.form.get('delcheck'):
+        if dbase.del_category('income_category', request.form['cat_name']):
+            flash('Category was deleted', 'success')
+        else:
+            flash('Category was not deleted', 'error')
+    elif dbase.write_category('income_category', request.form['cat_name']):
+        flash('Category was added', 'success')
+    else:
+        flash('Category cannot be added', 'error')
+    return redirect(url_for('inc'))
+
 @app.route('/income_analysis', methods=['GET'])
 def inc_analysis() -> str:
     df = pd.DataFrame(dbase.get_timeseries('income', current_user.get_id()))
@@ -146,7 +159,7 @@ def inc_analysis() -> str:
     train = df.drop([df.shape[0]-1])
     train = train.drop('time_id', axis=1)
     model = ARIMA(train)
-    model = model.fit()
+    model = model.fit(method_kwargs={'maxiter':300})
     train.loc[train.shape[0]] = model.forecast(1).iloc[0]
     train['date'] = df.time_id
     train = train.ffill()
@@ -179,7 +192,22 @@ def inc_parse():
 @login_required
 def inc():
     return render_template('income.html', 
-                           records=dbase.get_records('income', current_user.get_id()), lnk=2)
+                           records=dbase.get_records('income', current_user.get_id()),
+                           categories=dbase.get_categories('income_category'),
+                           lnk=2)
+
+@app.route('/cred_category', methods=['POST'])
+def cred_category():
+    if request.form.get('delcheck'):
+        if dbase.del_category('credit_category', request.form['cat_name']):
+            flash('Category was deleted', 'success')
+        else:
+            flash('Category was not deleted', 'error')
+    elif dbase.write_category('credit_category', request.form['cat_name']):
+        flash('Category was added', 'success')
+    else:
+        flash('Category cannot be added', 'error')
+    return redirect(url_for('cred'))
 
 @app.route('/cred_parse', methods=['POST'])
 def cred_parse():
@@ -201,7 +229,22 @@ def cred_parse():
 @login_required
 def cred():
     return render_template('credits.html', 
-                           records=dbase.get_records('credit', current_user.get_id()), lnk=4)
+                           records=dbase.get_records('credit', current_user.get_id()),
+                           categories=dbase.get_categories('credit_category'),
+                           lnk=4)
+
+@app.route('/exp_category', methods=['POST'])
+def exp_category():
+    if request.form.get('delcheck'):
+        if dbase.del_category('expense_category', request.form['cat_name']):
+            flash('Category was deleted', 'success')
+        else:
+            flash('Category was not deleted', 'error')
+    elif dbase.write_category('expense_category', request.form['cat_name']):
+        flash('Category was added', 'success')
+    else:
+        flash('Category cannot be added', 'error')
+    return redirect(url_for('exp'))
 
 @app.route('/expense_analysis', methods=['GET'])
 def exp_analysis() -> str:
@@ -243,8 +286,10 @@ def exp_parse():
 @app.route('/expenses', methods=['GET', 'POST'])
 @login_required
 def exp():
-    return render_template('expenses.html', 
-                           records=dbase.get_records('expense', current_user.get_id()), lnk=3)
+    return render_template('expenses.html',
+                           records=dbase.get_records('expense', current_user.get_id()),
+                           categories=dbase.get_categories('expense_category'),
+                           lnk=3)
 
 @app.errorhandler(404)
 def pageNotFound(error):
@@ -252,4 +297,3 @@ def pageNotFound(error):
 
 if __name__ == '__main__':
     app.run(debug=False)
-    dbase.close()
