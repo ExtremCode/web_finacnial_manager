@@ -4,7 +4,7 @@
 
 <row>
   <login>leff</login>
-  <limit_of_expenses>4</limit_of_expenses>
+  <limit_of_expenses>100</limit_of_expenses>
   <limit_of_credits>500</limit_of_credits>
 </row>
 
@@ -14,26 +14,32 @@
 
 <row>
   <category>salary</category>
-  <amount>1</amount>
-  <date>2023-11-21</date>
+  <amount>10</amount>
+  <date>2023-09-01</date>
+</row>
+
+<row>
+  <category>salary</category>
+  <amount>10</amount>
+  <date>2023-10-01</date>
+</row>
+
+<row>
+  <category>salary</category>
+  <amount>10</amount>
+  <date>2023-11-01</date>
+</row>
+
+<row>
+  <category>salary</category>
+  <amount>10</amount>
+  <date>2023-12-01</date>
 </row>
 
 <row>
   <category>premiums</category>
-  <amount>1</amount>
-  <date>2023-11-21</date>
-</row>
-
-<row>
-  <category>investments</category>
-  <amount>3</amount>
-  <date>2023-11-22</date>
-</row>
-
-<row>
-  <category>another</category>
-  <amount>5</amount>
-  <date>2023-11-08</date>
+  <amount>120</amount>
+  <date>2023-12-21</date>
 </row>
 
 </income>
@@ -41,93 +47,39 @@
 <expenses xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 <row>
-  <category>restaurants</category>
-  <amount>2</amount>
-  <date>2023-11-09</date>
-</row>
-
-<row>
-  <category>hobby</category>
-  <amount>3</amount>
-  <date>2023-11-01</date>
-</row>
-
-<row>
-  <category>medicine</category>
-  <amount>4</amount>
-  <date>2023-11-01</date>
-</row>
-
-<row>
-  <category>transport</category>
-  <amount>5</amount>
-  <date>2023-11-01</date>
-</row>
-
-<row>
-  <category>sport</category>
-  <amount>6</amount>
-  <date>2023-11-01</date>
-</row>
-
-<row>
-  <category>rental</category>
-  <amount>7</amount>
-  <date>2023-11-01</date>
-</row>
-
-<row>
-  <category>another</category>
-  <amount>8</amount>
-  <date>2023-11-01</date>
-</row>
-
-<row>
   <category>groceries</category>
-  <amount>1</amount>
-  <date>2023-11-27</date>
-</row>
-
-<row>
-  <category>groceries</category>
-  <amount>1</amount>
-  <date>2023-12-10</date>
-</row>
-
-<row>
-  <category>groceries</category>
-  <amount>1</amount>
-  <date>2023-12-08</date>
-</row>
-
-<row>
-  <category>medicine</category>
-  <amount>6</amount>
-  <date>2023-10-11</date>
-</row>
-
-<row>
-  <category>rental</category>
-  <amount>15</amount>
-  <date>2023-09-14</date>
-</row>
-
-<row>
-  <category>sport</category>
-  <amount>11</amount>
-  <date>2023-10-20</date>
-</row>
-
-<row>
-  <category>hobby</category>
   <amount>9</amount>
-  <date>2023-09-15</date>
+  <date>2023-09-01</date>
 </row>
 
 <row>
-  <category>another</category>
-  <amount>15</amount>
-  <date>2023-10-06</date>
+  <category>groceries</category>
+  <amount>9</amount>
+  <date>2023-10-01</date>
+</row>
+
+<row>
+  <category>groceries</category>
+  <amount>9</amount>
+  <date>2023-11-01</date>
+</row>
+
+<row>
+  <category>groceries</category>
+  <amount>9</amount>
+  <date>2023-12-01</date>
+</row>
+
+<row>
+  <category>consumer credit</category>
+  <amount>50</amount>
+  <date>2023-12-15</date>
+</row>
+
+<row>
+  <category>consumer credit</category>
+  <amount>1</amount>
+  <date>2023-12-01</date>
 </row>
 
 </expenses>
@@ -135,23 +87,8 @@
 <credits xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 <row>
-  <category_of_credit>mortgage</category_of_credit>
-  <amount>2</amount>
-</row>
-
-<row>
-  <category_of_credit>car loan</category_of_credit>
-  <amount>3</amount>
-</row>
-
-<row>
   <category_of_credit>consumer credit</category_of_credit>
-  <amount>1</amount>
-</row>
-
-<row>
-  <category_of_credit>consumer credit</category_of_credit>
-  <amount>500</amount>
+  <amount>149</amount>
 </row>
 
 </credits>
@@ -159,18 +96,8 @@
 <bank_accounts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 <row>
-  <account_name>first</account_name>
-  <amount>99900</amount>
-</row>
-
-<row>
-  <account_name>Boss Of The Gym</account_name>
-  <amount>5</amount>
-</row>
-
-<row>
   <account_name>Jo</account_name>
-  <amount>10</amount>
+  <amount>5000</amount>
 </row>
 
 </bank_accounts>

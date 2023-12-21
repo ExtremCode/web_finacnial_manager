@@ -63,11 +63,6 @@
 			<RESPONSIBILITY>correct recording of monetary transactions</RESPONSIBILITY>
 			<TOTALUSERS>unlimited</TOTALUSERS>
 		</ROLE>
-		<ROLE>
-			<TITLE>administrator</TITLE>
-			<RESPONSIBILITY>correct removing users</RESPONSIBILITY>
-			<TOTALUSERS>1</TOTALUSERS>
-		</ROLE>
 	</ROLES>
 	<TECHSPEC>
 		<TYPE>web-application</TYPE>

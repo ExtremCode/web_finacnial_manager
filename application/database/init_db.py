@@ -16,7 +16,7 @@ def apply():
     with backend.lock():
         backend.apply_migrations(backend.to_apply(migrations))
 
-def init_db() -> tuple:
+def init_db():
     apply()
     conn = psg.connect(PostgresSettings().url)
     cursor = conn.cursor(cursor_factory=DictCursor)
@@ -40,6 +40,9 @@ def init_db() -> tuple:
         ('transport'),
         ('sport'),
         ('rental'),
+        ('consumer credit'),
+        ('mortgage'),
+        ('car loan'),
         ('another');""")
     except Exception as e:
         print("error in init_db(): ", e)
@@ -54,4 +57,5 @@ def init_db() -> tuple:
         print("error in init_db(): ", e)
         conn.rollback()
     conn.commit()
-    return conn, cursor
+    cursor.close()
+    conn.close()
