@@ -65,4 +65,44 @@
     </table>
   </div>
 </div>
+{% endblock %} {% block update_account %}
+<div class="container" style="max-width: 30%; margin-top: 0%">
+  <h3>Update account</h3>
+  <form action="{{url_for('update_account')}}" method="post" name="form">
+    <div class="input-group mb-3">
+      <span class="input-group-text">Account name</span>
+      <input
+        type="text"
+        id="acc_name"
+        name="acc_name"
+        class="form-control"
+        required
+        minlength="3"
+        maxlength="50"
+        placeholder="account name"
+      />
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text">Account balance</span>
+      <input
+        type="number"
+        class="form-control"
+        aria-label="Dollar amount (with dot and two decimal places)"
+        min="0"
+        max="1000000000"
+        name="amount"
+        required
+      />
+      <span class="input-group-text">$</span>
+    </div>
+    <input
+      type="submit"
+      class="btn btn-primary"
+      value="Write"
+      name="submit"
+      id="submit"
+    />
+    <input type="reset" class="btn btn-secondary" value="Reset form" />
+  </form>
+</div>
 {% endblock %}

@@ -117,6 +117,7 @@
     </div>
     <div class="container my-5 text-center">
       <div class="row">
+        {% block update_account %}
         <div class="col-lg-4 col-sm-3 text-center">
           {% block cat_form %} {% endblock %}
         </div>
@@ -124,6 +125,7 @@
           <div class="container">{% block button %} {% endblock %}</div>
           <div class="container">{% block graph %} {% endblock %}</div>
         </div>
+        {% endblock %}
       </div>
     </div>
   </body>

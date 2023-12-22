@@ -518,3 +518,33 @@ class DB:
         cursor.close()
         conn.close()
         return True
+    
+    def upd_acc(self, person_id: int, acc_name: str, amount: int) -> bool:
+        try:
+            conn = psg.connect(PostgresSettings().url)
+            cursor = conn.cursor(cursor_factory=DictCursor)
+        except Exception as e:
+            print("cannot get connection in upd_acc: ", e)
+            return False
+        try:
+            cursor.execute("""update account set amount = %(amnt)s
+                           where person_id = %(id)s and acc_name = %(name)s
+                           returning acc_id""",
+                           {'id': person_id, 'name': acc_name, 'amnt': amount})
+        except Exception as e:
+            print("error in write_categories: ", e)
+            print(type(e))
+            conn.rollback()
+            cursor.close()
+            conn.close()
+            return False
+        # if any data was updated, cursor.rowcount would be greater than 0
+        if cursor.rowcount == 0:
+            cursor.close()
+            conn.close()
+            return False
+        cursor.fetchall()
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return True

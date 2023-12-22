@@ -116,6 +116,16 @@ def mpage():
     prof = inc_am - exp_am
     return render_template('main_page.html', profit=prof, records=records, lnk=0)
 
+@app.route('/update_account', methods=['POST'])
+def update_account():
+    if dbase.upd_acc(current_user.get_id(),
+                     request.form['acc_name'],
+                     request.form['amount']):
+        flash('Account was updated', 'success')
+    else:
+        flash('Account cannot be updated', 'error')
+    return redirect(url_for('acc'))
+
 @app.route('/acc_parse', methods=['POST'])
 def acc_parse():
     if request.form.get('delcheck'):
